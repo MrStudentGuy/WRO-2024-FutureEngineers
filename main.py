@@ -6,9 +6,11 @@ GPIO.setwarnings(False)
 GPIO.setup(17, GPIO.OUT)
 
 while True:
-    GPIO.output(17, GPIO.HIGH)
-    time.sleep(1)
-    GPIO.output(17, GPIO.LOW)
-    time.sleep(1)
+    lightstate = int(input)
+    match lightstate:
+        case 1:
+            GPIO.output(17, GPIO.HIGH)
+        case 0:
+            GPIO.output(17, GPIO.LOW)
 
 GPIO.cleanup()
