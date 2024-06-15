@@ -6,7 +6,7 @@ GPIO.setwarnings(False)
 GPIO.setup(17, GPIO.OUT)
 
 while True:
-    lightstate = int(input)
+    lightstate = int(input())
     match lightstate:
         case 1:
             GPIO.output(17, GPIO.HIGH)
