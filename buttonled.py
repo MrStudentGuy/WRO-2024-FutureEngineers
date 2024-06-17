@@ -25,7 +25,7 @@ def buttonpress(buttonstate):
 # Turning LED off to start
 GPIO.output(LED, GPIO.LOW)
 
-# Ensuring it is only run as a script, not an import
+# Ensures it is run only as a script, not an import
 if __name__ == '__main__':
     print('Press the button to temporarily turn on the light')
     print('Ctrl + C to exit')
