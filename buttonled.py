@@ -32,7 +32,7 @@ if __name__ == '__main__':
         while True:
             # Checking for button press
             buttonstate = GPIO.input(18)
-    
+            buttonpress(buttonstate)    
             
     except KeyboardInterrupt:
         # Cleans up GPIO pins / resets state when terminated using Ctrl + C
