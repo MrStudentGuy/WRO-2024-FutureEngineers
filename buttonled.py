@@ -17,10 +17,10 @@ def buttonpress(buttonstate):
     match buttonstate:
         case GPIO.HIGH:
             # If button is not pressed
-            GPIO.output(17, GPIO.LOW)
+            GPIO.output(LED, GPIO.LOW)
         case GPIO.LOW:
             # If button is pressed
-            GPIO.output(17, GPIO.HIGH)
+            GPIO.output(LED, GPIO.HIGH)
             
 # Turning LED off to start
 GPIO.output(LED, GPIO.LOW)
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     try:
         while True:
             # Checking for button press
-            buttonstate = GPIO.input(18)
+            buttonstate = GPIO.input(button)
             buttonpress(buttonstate)    
             
     except KeyboardInterrupt:
