@@ -9,10 +9,12 @@ GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def led_on():
     GPIO.output(17, GPIO.HIGH)
+    print("LED ON")
 
 
 def led_off():
     GPIO.output(17, GPIO.LOW)
+    print("LED OFF")
 
 
 def toggle_led():
