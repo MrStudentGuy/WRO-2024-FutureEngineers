@@ -23,6 +23,6 @@ if __name__ == '__main__':
     led_last = False
 
     while True:
-        input = GPIO.input(18)
-	def ledtoggle()
+	    input = GPIO.input(18)
+	    ledtoggle()
     GPIO.cleanup()
