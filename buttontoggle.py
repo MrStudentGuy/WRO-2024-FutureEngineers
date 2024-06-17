@@ -24,4 +24,5 @@ if __name__ == '__main__':
 
     while True:
         input = GPIO.input(18)
+	def ledtoggle()
     GPIO.cleanup()
