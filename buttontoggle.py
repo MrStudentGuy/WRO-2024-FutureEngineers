@@ -33,6 +33,6 @@ if __name__ == '__main__':
         buttonstate = GPIO.input(18)
         if buttonstate == 0:
             toggle_led()
-            time.sleep(0.18)
+            time.sleep(0.175)
 
     GPIO.cleanup()
