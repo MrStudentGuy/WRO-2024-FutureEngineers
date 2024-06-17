@@ -19,5 +19,6 @@ if __name__ == '__main__':
 
     while True:
         if GPIO.input(18) == True:
-            led_toggle(True)
+            currentstate = True
+            led_toggle(currentstate)
     GPIO.cleanup()
