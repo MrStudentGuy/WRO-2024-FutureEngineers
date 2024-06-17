@@ -6,6 +6,8 @@ GPIO.setwarnings(False)
 GPIO.setup(17, GPIO.OUT)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+global led
+
 def ledtoggle():
 	if(input == 1 and led != input):
 		led = input
