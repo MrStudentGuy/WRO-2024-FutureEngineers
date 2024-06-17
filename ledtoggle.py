@@ -45,5 +45,5 @@ if __name__ == '__main__':
                 time.sleep(0.175) # Debounce delay
                 
     except KeyboardInterrupt:
-        
+        # Cleans up GPIO pins / resets state when terminated using Ctrl + C
         GPIO.cleanup()
