@@ -6,17 +6,17 @@ GPIO.setwarnings(False)
 GPIO.setup(17, GPIO.OUT)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-def led_toggle():
-    if GPIO.output(17) == GPIO.HIGH:
-        GPIO.output(17, GPIO.LOW)
-    else:
-        GPIO.output(17, GPIO.HIGH)
+def led_toggle(currentstate):
+    newstate = currentstate ^ laststate
+    GPIO.output(17, newstate)
+    laststate = currentstate
 
 
 if __name__ == '__main__':
+    
+    laststate = False
 
     while True:
         if GPIO.input(18) == GPIO.HIGH:
-            led_toggle()
-
+            led_toggle(True)
     GPIO.cleanup()
