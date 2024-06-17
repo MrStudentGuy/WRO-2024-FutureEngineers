@@ -23,7 +23,7 @@ def anti_clockwise():
 
 
 def toggle_motor_direction():
-    motorstate = GPIO.input(17)
+    motorstate = GPIO.input(27)
     if motorstate == 1:
         anti_clockwise()
     elif motorstate == 0:
@@ -35,6 +35,7 @@ if __name__ == '__main__':
     print("Ctrl+C to exit")
 
     while True:
+        GPIO.output(22, GPIO.HIGH)
         buttonstate = GPIO.input(18)
         if buttonstate == 0:
             toggle_motor_direction()
