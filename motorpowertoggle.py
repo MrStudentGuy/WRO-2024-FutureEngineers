@@ -4,7 +4,7 @@ import time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-# Initialising pins 
+# Initialising pins
 button = 18
 DIR = 27
 PWM = 22
@@ -13,45 +13,45 @@ GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(PWM, GPIO.OUT)
 
+
 # Motor rotates clockwise
-def clockwise():
-    GPIO.output(DIR, GPIO.HIGH)
-    print("CLOCKWISE")
+def motor_off():
+    GPIO.output(PWM, GPIO.LOW)
+    print("MOTOR OFF")
+
 
 # Motor rotates anti-clockwise
-def anti_clockwise():
-    GPIO.output(DIR, GPIO.LOW)
-    print("ANTI CLOCKWISE")
+def motor_on():
+    GPIO.output(PWM, GPIO.HIGH)
+    print("MOTOR ON")
 
 
-def toggle_motor_direction():
+def toggle_motor():
     # Checks motor direction
-    direction = GPIO.input(DIR)
+    motorstate = GPIO.input(PWM)
 
-    #Flips motor direction
-    if direction == 1:
-        anti_clockwise()
-    elif direction == 0:
-        clockwise()
+    # Flips motor direction
+    if motorstate == 1:
+        motor_off()
+    elif motorstate == 0:
+        motor_on()
+
 
 # Ensures it is run only as a script, not an import
 if __name__ == '__main__':
-    print("Press the button to toggle the motor's direction")
+    print("Press the button to turn the motor on and off")
     print("Ctrl+C to exit")
-    
+
     try:
         while True:
-            # Turns on motor
-            GPIO.output(PWM, GPIO.HIGH)
-
             # Detects button press
             buttonstate = GPIO.input(button)
 
-            # If button is pressed, calls direction toggle function
+            # If button is pressed, calls motor toggle function
             if buttonstate == 0:
-                toggle_motor_direction()
-                time.sleep(0.175) # Debounce delay
-                
+                toggle_motor()
+                time.sleep(0.175)  # Debounce delay
+
     except KeyboardInterrupt:
         # Cleans up GPIO pins / resets state when terminated using Ctrl + C
         GPIO.cleanup()
