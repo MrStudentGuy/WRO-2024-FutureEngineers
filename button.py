@@ -6,6 +6,8 @@ GPIO.setwarnings(False)
 GPIO.setup(17, GPIO.OUT)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+GPIO.output(17, GPIO.LOW)
+
 while True:
     lightstate = GPIO.input(18)
     match lightstate:
