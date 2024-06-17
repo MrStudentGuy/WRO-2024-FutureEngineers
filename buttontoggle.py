@@ -7,23 +7,30 @@ GPIO.setup(17, GPIO.OUT)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
-def ledtoggle(input, led, led_last):
-    if (input == 1 and led != input):
-        led = input
-        led_last = not led_last
-        GPIO.output(17, int(led_last))
-        print("LED turned on? : " + str(led_last))
-    elif (input == 0 and led != input):
-        print("Toggle pin LOW")
-        led = 0
+def led_on():
+    GPIO.output(17, GPIO.HIGH)
+
+
+def led_off():
+    GPIO.output(17, GPIO.LOW)
+
+
+def toggle_led():
+    ledstate = GPIO.input(17)
+    if ledstate == 1:
+        led_off()
+    elif ledstate == 0:
+        led_on()
 
 
 if __name__ == '__main__':
-    led = 0
-    led_last = False
+    print("Press the button to toggle the light")
+    print("Ctrl+C to exit")
 
     while True:
-        input = GPIO.input(18)
-        ledtoggle(input, led, led_last)
+        buttonstate = GPIO.input(18)
+        if buttonstate == 0:
+            toggle_led()
+            time.sleep(0.2)
 
     GPIO.cleanup()
