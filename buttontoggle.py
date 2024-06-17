@@ -7,6 +7,7 @@ GPIO.setup(17, GPIO.OUT)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def led_toggle(currentstate):
+    global laststate
     newstate = currentstate ^ laststate
     GPIO.output(17, newstate)
     laststate = currentstate
@@ -14,7 +15,7 @@ def led_toggle(currentstate):
 
 if __name__ == '__main__':
     
-    global laststate = False
+    laststate = False
 
     while True:
         if GPIO.input(18) == GPIO.HIGH:
