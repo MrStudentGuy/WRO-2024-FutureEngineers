@@ -45,7 +45,7 @@ if __name__ == '__main__':
             GPIO.output(PWM, GPIO.HIGH)
 
             # Detects button press
-            buttonstate = GPIO.input(18)
+            buttonstate = GPIO.input(button)
 
             # If button is pressed, calls direction toggle function
             if buttonstate == 0:
