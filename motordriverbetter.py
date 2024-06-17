@@ -33,12 +33,12 @@ def toggle_motor_direction():
 if __name__ == '__main__':
     print("Press the button to toggle the motor direction ")
     print("Ctrl+C to exit")
-
-    while True:
-        GPIO.output(22, GPIO.HIGH)
-        buttonstate = GPIO.input(18)
-        if buttonstate == 0:
-            toggle_motor_direction()
-            time.sleep(0.175)
-
-    GPIO.cleanup()
+    try:
+        while True:
+            GPIO.output(22, GPIO.HIGH)
+            buttonstate = GPIO.input(18)
+            if buttonstate == 0:
+                toggle_motor_direction()
+                time.sleep(0.175)
+    except KeyboardInterrupt:
+        GPIO.cleanup()
