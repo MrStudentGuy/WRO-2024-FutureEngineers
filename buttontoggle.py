@@ -8,7 +8,6 @@ GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def ledtoggle():
     if(input == 1 and led != input):
-		print("Toggle pin HIGH, ", end='')
 		led = input
 		led_last = not led_last
 		GPIO.output(17, int(led_last))
