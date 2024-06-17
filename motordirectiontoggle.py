@@ -34,7 +34,7 @@ def toggle_motor_direction():
     elif direction == 0:
         clockwise()
 
-# Ensures it is run as a script, not as an import
+# Ensures it is run only as a script, not an import
 if __name__ == '__main__':
     print("Press the button to toggle the motor's direction")
     print("Ctrl+C to exit")
@@ -53,4 +53,5 @@ if __name__ == '__main__':
                 time.sleep(0.175) # Debounce delay
                 
     except KeyboardInterrupt:
+        # Cleans up GPIO pins / resets state when terminated using Ctrl + C
         GPIO.cleanup()
