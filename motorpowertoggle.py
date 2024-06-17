@@ -13,6 +13,8 @@ GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(PWM, GPIO.OUT)
 
+# Sets motor to clockwise rotation
+GPIO.output(DIR, GPIO.HIGH)
 
 # Turns off motor
 def motor_off():
@@ -44,9 +46,6 @@ if __name__ == '__main__':
 
     try:
         while True:
-            # Sets motor to clockwise rotation
-            GPIO.output(DIR, GPIO.HIGH)
-
             # Detects button press
             buttonstate = GPIO.input(button)
 
