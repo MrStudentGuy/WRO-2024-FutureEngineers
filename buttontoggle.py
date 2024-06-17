@@ -14,7 +14,7 @@ def led_toggle(currentstate):
 
 if __name__ == '__main__':
     
-    laststate = False
+    global laststate = False
 
     while True:
         if GPIO.input(18) == GPIO.HIGH:
