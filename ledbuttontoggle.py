@@ -11,10 +11,9 @@ BUTTON = 18
 GPIO.setup(LED, GPIO.OUT)
 GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-# Setting initial state of button and/or lightbulb
+# Setting initial states
 previousstate = 0
 currentstate = 0
-
 
 # Turns on LED
 def led_on():

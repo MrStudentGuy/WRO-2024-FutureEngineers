@@ -6,10 +6,10 @@ GPIO.setwarnings(False)
 
 # Initialising pins
 LED = 17
-button = 18
+BUTTON = 18
 
 GPIO.setup(LED, GPIO.OUT)
-GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Function when button is pressed
 def buttonpress(buttonstate):
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     try:
         while True:
             # Checking for button press
-            buttonstate = GPIO.input(button)
+            buttonstate = GPIO.input(BUTTON)
             buttonpress(buttonstate)    
             
     except KeyboardInterrupt:

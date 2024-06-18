@@ -5,16 +5,21 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 # Initialising pins
-button = 18
+BUTTON = 18
 DIR = 27
 PWM = 22
 
-GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(PWM, GPIO.OUT)
 
 # Sets motor to clockwise rotation
 GPIO.output(DIR, GPIO.HIGH)
+
+# Setting initial states
+previousstate = 0
+currentstate = 0
+
 
 # Turns off motor
 def motor_off():
@@ -47,12 +52,13 @@ if __name__ == '__main__':
     try:
         while True:
             # Detects button press
-            buttonstate = GPIO.input(button)
+            currentstate = GPIO.input(BUTTON)
 
-            # If button is pressed, calls motor toggle function
-            if buttonstate == 0:
+            # Calls function when button is released
+            if previousstate == 1 and currentstate == 0:
                 toggle_motor()
-                time.sleep(0.175)  # Debounce delay
+
+            previousstate = currentstate
 
     except KeyboardInterrupt:
         # Cleans up GPIO pins / resets state when terminated using Ctrl + C
