@@ -51,11 +51,14 @@ if __name__ == '__main__':
 
             # Calls LED toggle function when button is pressed
             if buttonstate == 0:
+                print ('button pressed')
                 toggle_led(currentstate, previousstate)
                 time.sleep(0.175)  # Debounce delay
                 while buttonstate == 0:
                     time.sleep(0.001)
+                    print ('waiting')
                 if buttonstate == 1:
+                    print ('button released')
                     previousstate = currentstate
 
     except KeyboardInterrupt:
