@@ -11,6 +11,7 @@ BUTTON = 18
 GPIO.setup(LED, GPIO.OUT)
 GPIO.setup(BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+# Setting initial state of button and/or lightbulb
 previousstate = 0
 currentstate = 0
 
@@ -45,9 +46,13 @@ if __name__ == '__main__':
         while True:
             # Detects button press
             currentstate = GPIO.input(BUTTON)
+
+            # Calls function when button is released
             if previousstate == 1 and currentstate == 0:
                 toggle_led()
+
             previousstate = currentstate
+
     except KeyboardInterrupt:
         # Cleans up GPIO pins / resets state when terminated using Ctrl + C
         GPIO.cleanup()
