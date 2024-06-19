@@ -13,7 +13,7 @@ def count1(q):
         q.put(f"1: {i}")
 
 
-def count2():
+def count2(q):
     while True:
         print(q.get())
 
