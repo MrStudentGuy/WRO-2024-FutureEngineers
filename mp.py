@@ -8,21 +8,25 @@ GPIO.setwarnings(False)
 
 
 def count1():
-    i = 0
-    for i in range(10):
+    for i in range(0, 10):
         print(f"1: {i}")
         time.sleep(1)
 
 
 def count2():
-    i = 10
-    for i in range(20):
+    for i in range(10, 20):
         print(f"2: {i}")
         time.sleep(1)
 
 
-c1 = multiprocessing.Process(target = count1(), args=())
-c2 = multiprocessing.Process(target=count2(), args=())
+# Ensures it is run only as a script, not an import
+if __name__ == '__main__':
 
-c1.start()
-c2.start()
+    c1 = multiprocessing.Process(target=count1)
+    c2 = multiprocessing.Process(target=count2)
+
+    c1.start()
+    c2.start()
+
+    c1.join()  # Wait for process 1 to finish
+    c2.join()  # Wait for process 2 to finish
