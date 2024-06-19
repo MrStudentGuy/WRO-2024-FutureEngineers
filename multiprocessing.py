@@ -1,4 +1,4 @@
-from multiprocessing import Process
+import multiprocessing
 import os
 import RPi.GPIO as GPIO
 import time
@@ -27,8 +27,8 @@ if __name__ == '__main__':
     try:
         while True:
 
-            c1 = Process(target = count1(), args=())
-            c2 = Process(target=count2(), args=())
+            c1 = multiprocessing.Process(target = count1(), args=())
+            c2 = multiprocessing.Process(target=count2(), args=())
 
             c1.start()
             c2.start()
