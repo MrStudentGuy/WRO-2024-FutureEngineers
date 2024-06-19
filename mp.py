@@ -1,5 +1,5 @@
 import multiprocessing
-import os
+import queue
 import RPi.GPIO as GPIO
 import time
 
@@ -7,23 +7,24 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 
-def count1():
+def count1(q):
     for i in range(0, 10):
-        print(f"1: {i}")
         time.sleep(1)
+        q.put(f"1: {i}")
 
 
 def count2():
-    for i in range(10, 20):
-        print(f"2: {i}")
-        time.sleep(1)
+    while True:
+        print(q.get())
 
 
 # Ensures it is run only as a script, not an import
 if __name__ == '__main__':
 
-    c1 = multiprocessing.Process(target=count1)
-    c2 = multiprocessing.Process(target=count2)
+    q = queue.Queue()
+
+    c1 = multiprocessing.Process(target=count1, args=(q,))
+    c2 = multiprocessing.Process(target=count2, args=(q,))
 
     c1.start()
     c2.start()
