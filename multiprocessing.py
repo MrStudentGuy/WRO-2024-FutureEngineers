@@ -28,7 +28,7 @@ if __name__ == '__main__':
         while True:
 
             c1 = multiprocessing.Process(target = count1(), args=())
-            c2 = multiprocessing.Process(target=count2(), args=()0
+            c2 = multiprocessing.Process(target=count2(), args=())
 
             c1.start()
             c2.start()
