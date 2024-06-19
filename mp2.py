@@ -1,32 +1,32 @@
 import multiprocessing
-import queue
 import time
+from multiprocessing import Pipe
 
-def count1(q):
+def count1(conn):
     for i in range(0, 10):
         print(f"1: {i}")
         time.sleep(1)
-        q.put(f"Count 1: {i}")  # Send message to queue
+        conn.send(f"Count 1: {i}")  # Send message through pipe
 
-def count2(q):
+def count2(conn):
     while True:
-        data = q.get()  # Receive message from queue
+        data = conn.recv()  # Receive message from pipe
         if data == 'done':
             break
         print(f"Received from 1: {data}")
         time.sleep(1)
 
 if __name__ == "__main__":
-    q = queue.Queue()
+    parent_conn, child_conn = Pipe()
 
-    c1 = multiprocessing.Process(target=count1, args=(q,))
-    c2 = multiprocessing.Process(target=count2, args=(q,))
+    c1 = multiprocessing.Process(target=count1, args=(child_conn,))
+    c2 = multiprocessing.Process(target=count2, args=(parent_conn,))
 
     c1.start()
     c2.start()
 
     c1.join()  # Wait for process 1 to finish
-    q.put('done')  # Signal process 2 to finish
+    child_conn.send('done')  # Signal process 2 to finish
     c2.join()  # Wait for process 2 to finish
 
     print("Both processes finished!")
