@@ -1,4 +1,4 @@
-import multiprocessing
+import mp
 import os
 import RPi.GPIO as GPIO
 import time
