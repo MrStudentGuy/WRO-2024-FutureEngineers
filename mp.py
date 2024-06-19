@@ -10,14 +10,14 @@ GPIO.setwarnings(False)
 def count1():
     i = 0
     for i in range(10):
-        print(i)
+        print(f"1: {i}")
         time.sleep(1)
 
 
 def count2():
     i = 10
-    for i in range(10):
-        print(i)
+    for i in range(20):
+        print(f"2: {i}")
         time.sleep(1)
 
 
