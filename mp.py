@@ -30,4 +30,5 @@ if __name__ == '__main__':
     c2.start()
 
     c1.join()  # Wait for process 1 to finish
+    q.put('done')
     c2.join()  # Wait for process 2 to finish
