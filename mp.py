@@ -9,13 +9,18 @@ GPIO.setwarnings(False)
 
 def count1(q):
     for i in range(0, 10):
+        print(f"1: {i}")
         time.sleep(1)
-        q.put(f"1: {i}")
+        q.put(f"2: {i}")
 
 
 def count2(q):
     while True:
-        print(q.get())
+        data = q.get()  # Receive message from queue
+        if data == 'done':
+            break
+        print(f"Received from 1: {data}")
+        time.sleep(1)
 
 
 # Ensures it is run only as a script, not an import
