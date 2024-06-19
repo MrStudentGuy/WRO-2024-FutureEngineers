@@ -1,4 +1,4 @@
-import mp
+import multiprocessing
 import os
 import RPi.GPIO as GPIO
 import time
@@ -21,18 +21,8 @@ def count2():
         time.sleep(1)
 
 
-# Ensures it is run only as a script, not an import
-if __name__ == '__main__':
+c1 = multiprocessing.Process(target = count1(), args=())
+c2 = multiprocessing.Process(target=count2(), args=())
 
-    try:
-        while True:
-
-            c1 = multiprocessing.Process(target = count1(), args=())
-            c2 = multiprocessing.Process(target=count2(), args=())
-
-            c1.start()
-            c2.start()
-
-    except KeyboardInterrupt:
-        # Cleans up GPIO pins / resets state when terminated using Ctrl + C
-        GPIO.cleanup()
+c1.start()
+c2.start()
