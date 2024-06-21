@@ -27,5 +27,4 @@ if __name__ == '__main__':
     c1.start()
     c2.start()
 
-    c1.join()  # Wait for process 1 to finish
     c2.join()  # Wait for process 2 to finish
