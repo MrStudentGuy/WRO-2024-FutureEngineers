@@ -9,16 +9,14 @@ GPIO.setwarnings(False)
 
 def calc(numb):
     i = 0
-    while (i < 10):
+    while i < 10:
         numb.value = numb.value + 1
         i = i + 1
 
 
 def output(numb):
-    i = 0
-    while (i < 10):
+    while True:
         print(numb.value)
-        i = i + 1
 
 
 # Ensures it is run only as a script, not an import
