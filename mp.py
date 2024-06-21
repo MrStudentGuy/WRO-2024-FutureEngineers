@@ -15,7 +15,6 @@ def calc(numb):
 
 
 def output(numb):
-    while True:
         print(numb.value)
 
 
