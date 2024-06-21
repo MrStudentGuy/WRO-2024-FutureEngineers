@@ -1,5 +1,4 @@
 import multiprocessing
-import queue
 import RPi.GPIO as GPIO
 import time
 

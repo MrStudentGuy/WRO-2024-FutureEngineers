@@ -5,30 +5,25 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 # Initialising pins
-DIR = 27
-PWM = 22
+PWM = 17
 
-GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(PWM, GPIO.OUT)
-
-# Sets motor to clockwise rotation
-GPIO.output(DIR, GPIO.HIGH)
 
 # Motor control function
 pwm = GPIO.PWM(PWM, 100)  # Initialising PWM at 100Hz
-pwm.start(0)  # Start at 0% duty cycle / motor off
-
+pwm.start(0)  # Start at 0% duty cycle / servo off
 
 # Ensures it is run only as a script, not an import
 if __name__ == '__main__':
-    print("Enter duty cycle in %")
+    print("Enter angle in degrees between 0 and 180")
     print("Ctrl+C to exit")
 
     try:
         while True:
-            speed = int(input())
-            pwm.start(speed)
+            angle = int(input())
+            pwm.start(angle/18 + 2)
 
     except KeyboardInterrupt:
-        # Cleans up GPIO pins / resets state when terminated using Ctrl + C
+        # Cleans up GPIO pins / resets state and terminates PWM when terminated using Ctrl + C
+        pwm.stop()
         GPIO.cleanup()
