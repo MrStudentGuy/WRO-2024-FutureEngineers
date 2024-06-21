@@ -6,7 +6,7 @@ import time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-def process():
+def process(number):
     for i in range(0, 10):
         number = i
 
