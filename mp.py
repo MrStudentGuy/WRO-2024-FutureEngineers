@@ -15,7 +15,7 @@ def calc(numb):
 
 
 def output(numb):
-        print(numb.value)
+    print(numb.value)
 
 
 # Ensures it is run only as a script, not an import
