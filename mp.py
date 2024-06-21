@@ -8,13 +8,11 @@ GPIO.setwarnings(False)
 
 
 def calc(number):
-    for i in range(0, 10):
-        number.value = i
+    number.value = number.value + 1
 
 
 def output(number):
-    for i in range(0, 10):
-        print(number.value)
+    print(number.value)
 
 
 # Ensures it is run only as a script, not an import
