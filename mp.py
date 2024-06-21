@@ -6,19 +6,19 @@ import time
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
+
 def calc(number):
     for i in range(0, 10):
         number.value = i
 
 
 def output(number):
-    for i in range (0, 10):
+    for i in range(0, 10):
         print(number.value)
 
 
 # Ensures it is run only as a script, not an import
 if __name__ == '__main__':
-
     number = multiprocessing.Value('i', 0)
 
     c1 = multiprocessing.Process(target=calc, args=number)
