@@ -7,20 +7,20 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 
-def calc(number):
-    number.value = number.value + 1
+def calc(numb):
+    numb.value = numb.value + 1
 
 
-def output(number):
-    print(number.value)
+def output(numb):
+    print(numb.value)
 
 
 # Ensures it is run only as a script, not an import
 if __name__ == '__main__':
-    number = multiprocessing.Value('i', 0)
+    numb = multiprocessing.Value('i', 0)
 
-    c1 = multiprocessing.Process(target=calc, args=number)
-    c2 = multiprocessing.Process(target=output, args=number)
+    c1 = multiprocessing.Process(target=calc, args=(numb,))
+    c2 = multiprocessing.Process(target=output, args=(numb, ))
 
     c1.start()
     c2.start()
