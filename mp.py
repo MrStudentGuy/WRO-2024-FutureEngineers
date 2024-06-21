@@ -26,5 +26,3 @@ if __name__ == '__main__':
 
     c1.start()
     c2.start()
-
-    c2.join()  # Wait for process 2 to finish
