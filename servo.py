@@ -21,7 +21,7 @@ if __name__ == '__main__':
     try:
         while True:
             angle = int(input())
-            pwm.changeDutyCycle(angle/18 + 2)
+            pwm.ChangeDutyCycle(angle/18 + 2)
 
     except KeyboardInterrupt:
         # Cleans up GPIO pins / resets state and terminates PWM when terminated using Ctrl + C
