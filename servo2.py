@@ -27,7 +27,7 @@ if __name__ == '__main__':
                 break
 
             # Uses scale factor to set servo PWM to input angle
-            pwm.set_servo_pulsewidth(SERVO, (angle*scale_factor))
+            pwm.set_servo_pulsewidth(SERVO, ((angle*scale_factor)+500))
 
     except KeyboardInterrupt:
         # Turning off servo
