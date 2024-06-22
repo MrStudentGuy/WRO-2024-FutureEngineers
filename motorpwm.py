@@ -26,8 +26,16 @@ if __name__ == '__main__':
 
     try:
         while True:
+            # Takes duty cycle input
             speed = int(input())
-            pwm.start(speed)
+
+            # Checks for invalid input
+            if speed < 0 or speed > 100:
+                print('Invalid input')
+                break
+
+            # Sets duty cycle of motor
+            pwm.ChangeDutyCycle(speed)
 
     except KeyboardInterrupt:
         # Cleans up GPIO pins / resets state when terminated using Ctrl + C
