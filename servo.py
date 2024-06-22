@@ -1,29 +1,27 @@
 import RPi.GPIO as GPIO
+import pigpio
 import time
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
 # Initialising pins
-PWM = 17
-
-GPIO.setup(PWM, GPIO.OUT)
+SERVO = 17
 
 # Motor control function
-pwm = GPIO.PWM(PWM, 100)  # Initialising PWM at 100Hz
-pwm.start(0)  # Start at 0% duty cycle / servo off
+pwm = pigpio.pi()
+pwm.setmode(SERVO, pigpio.OUTPUT)
+pwm.set_PWM_frequency(SERVO, 50)
 
-# Ensures it is run only as a script, not an import
-if __name__ == '__main__':
-    print("Enter angle in degrees between 0 and 180")
-    print("Ctrl+C to exit")
+print("0 deg")
+pwm.set_servo_pulsewidth(SERVO, 500)
+time.sleep(3)
 
-    try:
-        while True:
-            angle = int(input())
-            pwm.ChangeDutyCycle(angle)
+print("90 deg")
+pwm.set_servo_pulsewidth(SERVO, 1500)
+time.sleep(3)
 
-    except KeyboardInterrupt:
-        # Cleans up GPIO pins / resets state and terminates PWM when terminated using Ctrl + C
-        pwm.stop()
-        GPIO.cleanup()
+print("180 deg")
+pwm.set_servo_pulsewidth(SERVO,2500)
+time.sleep(3)
+
+# turning off servo
+pwm.set_PWM_dutycycle(SERVO, 0)
+pwm.set_PWM_frequency(SERVO, 0)
