@@ -7,7 +7,7 @@ SERVO = 17
 
 # Motor control function
 pwm = pigpio.pi()
-pwm.setmode(SERVO, pigpio.OUTPUT)
+pwm.set_mode(SERVO, pigpio.OUTPUT)
 pwm.set_PWM_frequency(SERVO, 50)
 
 print("0 deg")
