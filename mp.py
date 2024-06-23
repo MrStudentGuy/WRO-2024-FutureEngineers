@@ -13,7 +13,7 @@ def calc(numb):
         i = i + 1
 
 
-def output(numb):
+def printer(numb):
     print(numb.value)
 
 
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     numb = multiprocessing.Value('i', 0)
 
     c1 = multiprocessing.Process(target=calc, args=(numb,))
-    c2 = multiprocessing.Process(target=output, args=(numb, ))
+    c2 = multiprocessing.Process(target=printer, args=(numb, ))
 
     c1.start()
     c2.start()
