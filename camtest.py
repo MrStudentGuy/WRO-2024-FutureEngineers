@@ -1,16 +1,22 @@
 #!/usr/bin/python3
+
 import time
 
 from picamera2 import Picamera2, Preview
 
-# Here we load up the tuning for the HQ cam and alter the default exposure profile.
-# For more information on what can be changed, see chapter 5 in
-# https://datasheets.raspberrypi.com/camera/raspberry-pi-camera-guide.pdf
-
-tuning = Picamera2.load_tuning_file("imx708-b0311.json", "/opt/arducam")
-
-picam2 = Picamera2(tuning=tuning)
-picam2.configure(picam2.create_preview_configuration())
+picam2 = Picamera2()
 picam2.start_preview(Preview.QTGL)
+
+preview_config = picam2.create_preview_configuration()
+picam2.configure(preview_config)
+
 picam2.start()
-time.sleep(10)
+time.sleep(1)
+
+picam2.set_controls({"AfMode": 0, "LensPosition": 425})
+# If your libcamera-dev version is 0.0.10, use the following code.
+# AfMode Set the AF mode (manual, auto, continuous)
+# For example, single focus: picam2.set_controls({"AfMode": 1 ,"AfTrigger": 0})
+#              continuous focus: picam2.set_controls({"AfMode": 2 ,"AfTrigger": 0})
+
+time.sleep(5)
