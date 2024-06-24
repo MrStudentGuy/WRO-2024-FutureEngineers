@@ -1,15 +1,20 @@
-# import the necessary packages
-from picamera2 import Picamera2, Preview
+# cv2-stamp.py from picamera2 manual 8.2.1
+#
 import time
+from picamera2 import Picamera2, MappedArray
 import cv2
-# initialize the camera and grab a reference to the raw camera capture
-camera = PiCamera()
-rawCapture = PiRGBArray(camera)
-# allow the camera to warmup
-time.sleep(0.1)
-# grab an image from the camera
-camera.capture(rawCapture, format="bgr")
-image = rawCapture.array
-# display the image on screen and wait for a keypress
-cv2.imshow("Image", image)
-cv2.waitKey(0)
+picam2 = Picamera2()
+colour = (0, 255, 0)
+origin = (0, 30)
+font = cv2.FONT_HERSHEY_SIMPLEX
+scale = 1
+thickness = 2
+
+def apply_timestamp(request):
+  timestamp = time.strftime("%Y-%m-%d %X")
+  with MappedArray(request, "main") as m:
+    cv2.putText(m.array, timestamp, origin, font, scale, colour, thickness)
+
+picam2.pre_callback = apply_timestamp
+picam2.start(show_preview=True)
+time.sleep(5)
