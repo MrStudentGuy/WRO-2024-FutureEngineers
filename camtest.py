@@ -19,3 +19,4 @@ picam2.set_controls({"AfMode": 0, "LensPosition": 425})
 # For example, single focus: picam2.set_controls({"AfMode": 1 ,"AfTrigger": 0})
 #              continuous focus: picam2.set_controls({"AfMode": 2 ,"AfTrigger": 0})
 
+time.sleep(20)
