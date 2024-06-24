@@ -18,14 +18,11 @@ def apply_timestamp(request):
   with MappedArray(request, "main") as m:
     cv2.putText(m.array, timestamp, origin, font, scale, colour, thickness)
 
-cam.configure(cam.create_video_configuration(main={"format": 'XRGB8888',
-                                                           "size": (width, height)}))
-
 # Running camera
 cam.pre_callback = apply_timestamp
 cam.start(show_preview=True)
 
 while True:
     frame = cam.capture_array()
-    cv2.imshow('f', frame)
+    cv2.imshow('Video', frame)
     cv2.waitKey(1)
