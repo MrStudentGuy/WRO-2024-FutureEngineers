@@ -3,7 +3,7 @@ from picamera2 import Picamera2, MappedArray
 import cv2
 
 # Initialising picamera2 object
-picam2 = Picamera2()
+cam = Picamera2()
 
 # Timestamp variables
 colour = (0, 255, 0)
@@ -18,9 +18,14 @@ def apply_timestamp(request):
   with MappedArray(request, "main") as m:
     cv2.putText(m.array, timestamp, origin, font, scale, colour, thickness)
 
-# Running camera
-picam2.pre_callback = apply_timestamp
-picam2.start(show_preview=True)
+cam.configure(cam.create_video_configuration(main={"format": 'XRGB8888',
+                                                           "size": (width, height)}))
 
-# Delay till function end / camera running time
-time.sleep(5)
+# Running camera
+cam.pre_callback = apply_timestamp
+cam.start(show_preview=True)
+
+while True:
+    frame = cam.capture_array()
+    cv2.imshow('f', frame)
+    cv2.waitKey(1)
