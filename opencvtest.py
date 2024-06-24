@@ -5,6 +5,8 @@ import cv2
 cam = Picamera2()
 cam.start()
 
+cv2.cvtColor(cv2.COLOR_BGR2RGB)
+
 if __name__ == '__main__':
     try:
         while True:
