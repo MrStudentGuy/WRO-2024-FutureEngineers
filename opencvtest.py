@@ -11,8 +11,7 @@ if __name__ == '__main__':
             frame = cam.capture_array() # Constantly capturing frames / video
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Converts each frame to HSV colour
             contours, hierarchy = cv2.findContours(frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-            if not contours:
-                print("No contours found!")
+            print(len(contours))
             cv2.drawContours(frame, contours, -1, (255, 255, 255), 3)
             cv2.imshow('Video', frame) # Creating OpenCV preview using captured frames, named 'Video'
             cv2.waitKey(1) # Allows stream to continue until a key is pressed / program terminated
