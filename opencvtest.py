@@ -9,9 +9,9 @@ if __name__ == '__main__':
     try:
         while True:
             frame = cam.capture_array() # Constantly capturing frames / video
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Converts each frame to HSV colour
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) # Converts each frame to HSV colour
             edges = cv2.Canny(frame, 30, 200)
-            contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            contours, hierarchy = cv2.findContours(edges, cv2.RETR_FLOODFILL, cv2.CHAIN_APPROX_NONE)
             print(len(contours))
             cv2.drawContours(frame, contours, -1, (255, 255, 255), 3)
             cv2.imshow('Video', frame) # Creating OpenCV preview using captured frames, named 'Video'
