@@ -11,6 +11,7 @@ if __name__ == '__main__':
     try:
         while True:
             frame = cam.capture_array() # Constantly capturing frames / video
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             cv2.imshow('Video', frame) # Creating OpenCV preview using captured frames, named 'Video'
             cv2.waitKey(1) # Allows stream to continue until a key is pressed / program terminated
     except KeyboardInterrupt:
