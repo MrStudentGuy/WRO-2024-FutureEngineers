@@ -51,6 +51,11 @@ if __name__ == '__main__':
             # contours_green = sorted(contours_green, key=cv2.contourArea, reverse=True)[:1]
 
             contours_red, hierarchy_red = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            if len(contours_red) > 0:
+                print('red')
+            else:
+                print('not red')
             # contours_red = sorted(contours_red, key=cv2.contourArea, reverse=True)[:1]
 
             # # Taking maximum count of contours to highlight (removing small colour anomalies)
