@@ -11,6 +11,9 @@ if __name__ == '__main__':
             # Capturing frame
             frame = cam.capture_array()
 
+            # Converting to RGB for viewing purposes
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
             # Converting to HSV
             frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -40,9 +43,9 @@ if __name__ == '__main__':
             print(len(contours)) # Prints number of contours seen in each frame for debugging
             cv2.drawContours(frame, contours, -1, (255, 255, 255), 3) # Draws contours on frame in white (rgb 255,255,255)
 
-            cv2.imshow('Video', frame) # Creating OpenCV preview of captured frame named 'Video'
+            cv2.imshow('Video', frame_rgb) # Creating OpenCV preview of captured frame named 'Video'
             if cv2.waitKey(1):
-                break # Allows stream to continue until a key is pressed / program terminated
+                break
 
     except KeyboardInterrupt:
         # Stops camera feed when Ctrl + C is pressed
