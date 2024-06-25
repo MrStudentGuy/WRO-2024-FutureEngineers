@@ -6,6 +6,14 @@ import numpy as np
 cam = Picamera2()
 cam.start()
 
+# General variables needed for OpenCV
+kernel = np.ones((3,3),'uint8')
+
+# Flags for colour presence
+green_present = False
+red_present = False
+
+
 if __name__ == '__main__':
     try:
         while True:
@@ -29,20 +37,40 @@ if __name__ == '__main__':
             mask_green = cv2.inRange(frame_hsv, lower_green, upper_green)
             mask_red = cv2.inRange(frame_hsv, lower_red, upper_red)
 
-            # Combining masks
-            mask = cv2.bitwise_or(mask_green, mask_red)
+            # Functions to increase detection accuracy of masks
+            mask_green = cv2.dilate(mask_green, kernel, iterations=3)
+            mask_green = cv2.erode(mask_green, kernel, iterations=3)
+            mask_green = cv2.morphologyEx(mask_green, cv2.MORPH_OPEN, kernel,iterations = 5)
 
-            # Converting image to grayscale for cv2.Canny to better detect edges
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            edges = cv2.Canny(gray, 30, 200)
+            mask_red = cv2.dilate(mask_red, kernel, iterations=3)
+            mask_red = cv2.erode(mask_red, kernel, iterations=3)
+            mask_red = cv2.morphologyEx(mask_red, cv2.MORPH_OPEN, kernel, iterations=5)
 
-            # Applying mask to edges
-            edges_masked = cv2.bitwise_and(edges, edges, mask=mask)
+            # Finding and sorting contours for either colour
+            contours_green, hierarchy_green = cv2.findContours(mask_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            # contours_green = sorted(contours_green, key=cv2.contourArea, reverse=True)[:1]
 
-            # Contours
-            contours, hierarchy = cv2.findContours(edges_masked, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) # Draws contours from Canny file
-            print(len(contours)) # Prints number of contours seen in each frame for debugging
-            cv2.drawContours(frame_rgb, contours, -1, (255, 255, 255), 3) # Draws contours on frame in white (rgb 255,255,255)
+            contours_red, hierarchy_red = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            # contours_red = sorted(contours_red, key=cv2.contourArea, reverse=True)[:1]
+
+            # # Taking maximum count of contours to highlight (removing small colour anomalies)
+            # if len(contours_green) == 0:
+            #     print("Cant find contour for green....")
+            #     green_present = False
+            # else:
+            #
+            #     max_cnt_green = max(contours_green, key=cv2.contourArea)
+            #     green_present = True
+            #
+            # if len(contours_red) == 0:
+            #     print("Cant find contour for red....")
+            #     red_present = False
+            # else:
+            #
+            #     max_cnt_red = max(contours_red, key=cv2.contourArea)
+            #     red_present = True
+            cv2.drawContours(frame_rgb, contours_green, -1, (255, 255, 255), 3)
+            cv2.drawContours(frame_rgb, contours_red, -1, (255, 255, 255), 3)
 
             cv2.imshow('Video', frame_rgb) # Creating OpenCV preview of captured frame named 'Video'
             if cv2.waitKey(1) & 0xFF == ord('q'):
