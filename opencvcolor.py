@@ -47,10 +47,10 @@ if __name__ == '__main__':
             mask_red = cv2.morphologyEx(mask_red, cv2.MORPH_OPEN, kernel, iterations=5)
 
             # Finding and sorting contours for either colour
-            contours_green, hierarchy_green = cv2.findContours(mask_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            contours_green, hierarchy_green = cv2.findContours(mask_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             # contours_green = sorted(contours_green, key=cv2.contourArea, reverse=True)[:1]
 
-            contours_red, hierarchy_red = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            contours_red, hierarchy_red = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             # contours_red = sorted(contours_red, key=cv2.contourArea, reverse=True)[:1]
 
             # # Taking maximum count of contours to highlight (removing small colour anomalies)
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             #
             #     max_cnt_red = max(contours_red, key=cv2.contourArea)
             #     red_present = True
-            # cv2.drawContours(frame_rgb, contours_green, -1, (255, 255, 255), 3)
+            cv2.drawContours(frame_rgb, contours_green, -1, (255, 255, 255), 3)
             cv2.drawContours(frame_rgb, contours_red, -1, (255, 255, 255), 3)
 
             cv2.imshow('Video', frame_rgb) # Creating OpenCV preview of captured frame named 'Video'
