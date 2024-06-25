@@ -42,7 +42,7 @@ if __name__ == '__main__':
             # Contours
             contours, hierarchy = cv2.findContours(edges_masked, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE) # Draws contours from Canny file
             print(len(contours)) # Prints number of contours seen in each frame for debugging
-            cv2.drawContours(frame, contours, -1, (255, 255, 255), 3) # Draws contours on frame in white (rgb 255,255,255)
+            cv2.drawContours(frame_rgb, contours, -1, (255, 255, 255), 3) # Draws contours on frame in white (rgb 255,255,255)
 
             cv2.imshow('Video', frame_rgb) # Creating OpenCV preview of captured frame named 'Video'
             if cv2.waitKey(1) & 0xFF == ord('q'):
