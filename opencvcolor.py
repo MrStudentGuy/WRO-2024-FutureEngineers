@@ -69,7 +69,7 @@ if __name__ == '__main__':
             #
             #     max_cnt_red = max(contours_red, key=cv2.contourArea)
             #     red_present = True
-            cv2.drawContours(frame_rgb, contours_green, -1, (255, 255, 255), 3)
+            # cv2.drawContours(frame_rgb, contours_green, -1, (255, 255, 255), 3)
             cv2.drawContours(frame_rgb, contours_red, -1, (255, 255, 255), 3)
 
             cv2.imshow('Video', frame_rgb) # Creating OpenCV preview of captured frame named 'Video'
