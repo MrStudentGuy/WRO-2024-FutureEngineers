@@ -30,8 +30,8 @@ if __name__ == '__main__':
             lower_green = np.array([40, 88, 30])
             upper_green = np.array([59, 163, 122])
 
-            lower_red = np.array([155, 99, 56])
-            upper_red = np.array([179, 190, 149])
+            lower_red = np.array([0, 100, 150])
+            upper_red = np.array([10, 200, 230])
 
             # Using bounds to create masks for green and red objects
             mask_green = cv2.inRange(frame_hsv, lower_green, upper_green)
