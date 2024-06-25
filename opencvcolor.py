@@ -44,9 +44,9 @@ if __name__ == '__main__':
             cv2.drawContours(frame, contours, -1, (255, 255, 255), 3) # Draws contours on frame in white (rgb 255,255,255)
 
             cv2.imshow('Video', frame_rgb) # Creating OpenCV preview of captured frame named 'Video'
-            if cv2.waitKey(1):
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
+        cv2.destroyAllWindows()
     except KeyboardInterrupt:
         # Stops camera feed when Ctrl + C is pressed
         cam.stop()
