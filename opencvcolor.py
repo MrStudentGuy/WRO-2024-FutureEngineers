@@ -27,8 +27,8 @@ if __name__ == '__main__':
             frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
             # Setting HSV colour bounds for green and red
-            lower_green = np.array([45, 70, 38])
-            upper_green = np.array([55, 163, 255])
+            lower_green = np.array([40, 88, 30])
+            upper_green = np.array([59, 163, 122])
 
             lower_red = np.array([155, 99, 56])
             upper_red = np.array([179, 190, 149])
