@@ -1,5 +1,6 @@
 from picamera2 import Picamera2
 import cv2
+import numpy as np
 
 # Initialising and starting picamera2 object
 cam = Picamera2()
@@ -18,11 +19,11 @@ if __name__ == '__main__':
             frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
             # Setting HSV colour bounds for green and red
-            lower_green = (40, 40, 40)
-            upper_green = (80, 255, 255)
+            lower_green = np.array([40, 88, 38])
+            upper_green = np.array([59, 163, 122])
 
-            lower_red = (0, 40, 40)
-            upper_red = (10, 255, 255)
+            lower_red = np.array([155, 99, 56])
+            upper_red = np.array([179, 190, 149])
 
             # Using bounds to create masks for green and red objects
             mask_green = cv2.inRange(frame_hsv, lower_green, upper_green)
