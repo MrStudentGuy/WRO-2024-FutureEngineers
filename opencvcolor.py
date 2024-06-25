@@ -30,7 +30,7 @@ if __name__ == '__main__':
             lower_green = np.array([40, 88, 30])
             upper_green = np.array([59, 163, 122])
 
-            lower_red = np.array([150, 100, 100])
+            lower_red = np.array([150, 0, 0])
             upper_red = np.array([180, 255, 255])
 
             # Using bounds to create masks for green and red objects
