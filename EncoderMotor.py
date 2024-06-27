@@ -7,6 +7,10 @@ import time
 CHANNEL_A_PIN = 23
 CHANNEL_B_PIN = 27
 BOUNCE_TIME = 100
+counterC = 0
+counterD = 0
+counterA = 0
+counterB = 0
 
 
 # Define the encoder pins
@@ -17,9 +21,8 @@ encoder_b = gpiozero.DigitalInputDevice(27)  # Pin 27 for encoder B
 counter = 0
 
 def encoder_a_rise():
-    global counter
-    counterA = 0
-    counterB = 0
+    global counterA
+    global counterB
 
 
     if encoder_b.value:
@@ -37,10 +40,9 @@ def encoder_a_rise():
 #         counter -= 1
 
 def encoder_b_rise():
-    global counter
+    global counterC
+    global counterD
 
-    counterC = 0
-    counterD = 0
 
     if encoder_a.value:
         counterC -= 1
