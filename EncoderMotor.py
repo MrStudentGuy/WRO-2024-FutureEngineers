@@ -1,14 +1,21 @@
 import RPi.GPIO as GPIO
 import time
 
+# Constants
+CHANNEL_A_PIN = 23
+CHANNEL_B_PIN = 27
+BOUNCE_TIME = 10
+
 # Set up GPIO pins for encoder channels A and B
 GPIO.setmode(GPIO.BCM)
-try:
-    GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Channel A
-    GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Channel B
-except RuntimeError as e:
-    print("Error setting up GPIO pins:", e)
-    exit(1)
+
+# Set GPIO mode to input explicitly
+GPIO.setup(CHANNEL_A_PIN, GPIO.IN)
+GPIO.setup(CHANNEL_B_PIN, GPIO.IN)
+
+# Set pull-up resistors
+GPIO.setup(CHANNEL_A_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(CHANNEL_B_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Initialize encoder counter
 encoder_count = 0
@@ -16,21 +23,21 @@ encoder_count = 0
 # Define a function to handle encoder interrupts
 def encoder_interrupt(channel):
     global encoder_count
-    if channel == 27:  # Channel A
-        if GPIO.input(23):  # Channel B
+    if channel == CHANNEL_A_PIN:  # Channel A
+        if GPIO.input(CHANNEL_B_PIN):  # Channel B
             encoder_count += 1
         else:
             encoder_count -= 1
-    elif channel == 23:  # Channel B
-        if GPIO.input(27):  # Channel A
+    elif channel == CHANNEL_B_PIN:  # Channel B
+        if GPIO.input(CHANNEL_A_PIN):  # Channel A
             encoder_count -= 1
         else:
             encoder_count += 1
 
 # Set up interrupts for encoder channels A and B
 try:
-    GPIO.add_event_detect(27, GPIO.RISING, callback=encoder_interrupt, bouncetime=10)
-    GPIO.add_event_detect(23, GPIO.RISING, callback=encoder_interrupt, bouncetime=10)
+    GPIO.add_event_detect(CHANNEL_A_PIN, GPIO.RISING, callback=encoder_interrupt, bouncetime=BOUNCE_TIME)
+    GPIO.add_event_detect(CHANNEL_B_PIN, GPIO.RISING, callback=encoder_interrupt, bouncetime=BOUNCE_TIME)
 except RuntimeError as e:
     print("Error adding edge detection:", e)
     exit(1)
