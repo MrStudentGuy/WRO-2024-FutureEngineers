@@ -27,7 +27,7 @@ def encoder_a_rise():
     else:
         counterB -= 1
 
-    print("A: ", counterA, "B: ", counterB)
+   # print("A: ", counterA, "B: ", counterB)
 
 # def encoder_counter():
 #     global counter
@@ -48,7 +48,7 @@ def encoder_b_rise():
     else:
         counterD += 1
 
-    print("C: ", counterC, "D: ", counterD)
+    #print("C: ", counterC, "D: ", counterD)
 
 
 # Set up the encoder pins to trigger on rising edges
@@ -60,7 +60,8 @@ print("Encoder counter started. Press Ctrl+C to exit.")
 try:
     while True:
         time.sleep(0.1)
-        # print("counter A: {}".format(counter))
+        # print("counter A: {}".format(counter)
+        print("A : {}, B: {}, C:{}, D: {}".format(counterA, counterB, counterC, counterD))
 except KeyboardInterrupt:
     print("Encoder counter stopped.")
     print("Final counter value:", counter)
