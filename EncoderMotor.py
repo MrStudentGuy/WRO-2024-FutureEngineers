@@ -3,8 +3,12 @@ import time
 
 # Set up GPIO pins for encoder channels A and B
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Channel A
-GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Channel B
+try:
+    GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Channel A
+    GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Channel B
+except RuntimeError as e:
+    print("Error setting up GPIO pins:", e)
+    exit(1)
 
 # Initialize encoder counter
 encoder_count = 0
@@ -24,8 +28,12 @@ def encoder_interrupt(channel):
             encoder_count += 1
 
 # Set up interrupts for encoder channels A and B
-GPIO.add_event_detect(27, GPIO.RISING, callback=encoder_interrupt, bouncetime=10)
-GPIO.add_event_detect(23, GPIO.RISING, callback=encoder_interrupt, bouncetime=10)
+try:
+    GPIO.add_event_detect(27, GPIO.RISING, callback=encoder_interrupt, bouncetime=10)
+    GPIO.add_event_detect(23, GPIO.RISING, callback=encoder_interrupt, bouncetime=10)
+except RuntimeError as e:
+    print("Error adding edge detection:", e)
+    exit(1)
 
 try:
     while True:
