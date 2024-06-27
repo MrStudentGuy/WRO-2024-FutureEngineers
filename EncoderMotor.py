@@ -60,10 +60,10 @@ encoder_b.when_activated = encoder_b_rise
 print("Encoder counter started. Press Ctrl+C to exit.")
 
 try:
-    global counterA
+    """global counterA
     global counterB
     global counterC
-    global counterD
+    global counterD"""
     while True:
         time.sleep(0.1)
         # print("counter A: {}".format(counter)
