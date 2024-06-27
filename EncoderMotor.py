@@ -6,7 +6,7 @@ import time
 # Constants
 CHANNEL_A_PIN = 23
 CHANNEL_B_PIN = 27
-BOUNCE_TIME = 50
+BOUNCE_TIME = 100
 
 
 # Define the encoder pins
