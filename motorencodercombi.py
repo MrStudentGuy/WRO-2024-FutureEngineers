@@ -21,7 +21,7 @@ GPIO.setwarnings(False)
 # Motor setup
 GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(PWM, GPIO.OUT)
-GPIO.output(DIR, GPIO.HIGH)  # Set motor to clockwise rotation
+GPIO.output(DIR, GPIO.HIGH)  # Set initial direction to clockwise
 pwm = GPIO.PWM(PWM, 100)  # Initializing PWM at 100Hz
 pwm.start(0)  # Start at 0% duty cycle / motor off
 
@@ -43,22 +43,30 @@ def encoder_counter():
 # Set up the encoder pins to trigger on rising edges
 encoder_a.when_activated = encoder_counter
 
-print("Motor control and encoder counter started. Enter duty cycle in %")
+print("Motor control and encoder counter started.")
+print("Enter: 0 for no power, 1 for 50% clockwise, -1 for 50% anticlockwise")
 print("Ctrl+C to exit")
 
 try:
     while True:
-        # Takes duty cycle input
-        speed = int(input("Enter duty cycle (0-100): "))
+        # Takes input
+        user_input = int(input("Enter command (0, 1, or -1): "))
 
-        # Checks for invalid input
-        if speed < 0 or speed > 100:
-            print('Invalid input')
+        if user_input == 0:
+            pwm.ChangeDutyCycle(0)
+            print("Motor stopped")
+        elif user_input == 1:
+            GPIO.output(DIR, GPIO.HIGH)  # Set direction to clockwise
+            pwm.ChangeDutyCycle(50)
+            print("Motor running at 50% duty cycle clockwise")
+        elif user_input == -1:
+            GPIO.output(DIR, GPIO.LOW)  # Set direction to anticlockwise
+            pwm.ChangeDutyCycle(50)
+            print("Motor running at 50% duty cycle anticlockwise")
+        else:
+            print('Invalid input. Please enter 0, 1, or -1.')
             continue
 
-        # Sets duty cycle of motor
-        pwm.ChangeDutyCycle(speed)
-        print(f"Motor speed set to {speed}%")
         print(f"Counter: {counter}")
 
 except KeyboardInterrupt:
