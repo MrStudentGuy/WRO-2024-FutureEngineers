@@ -59,6 +59,7 @@ try:
         # Sets duty cycle of motor
         pwm.ChangeDutyCycle(speed)
         print(f"Motor speed set to {speed}%")
+        print(f"Counter: {counter}")
 
 except KeyboardInterrupt:
     print("\nProgram terminated.")
