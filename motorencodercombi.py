@@ -144,12 +144,12 @@ try:
                 print("Motor stopped")
         elif user_input == 1:
             GPIO.output(DIR, GPIO.HIGH)  # Set direction to clockwise
-            pwm.ChangeDutyCycle(50)
+            pwm.ChangeDutyCycle(10)
             with print_lock:
                 print("Motor running at 50% duty cycle clockwise")
         elif user_input == -1:
             GPIO.output(DIR, GPIO.LOW)  # Set direction to anticlockwise
-            pwm.ChangeDutyCycle(50)
+            pwm.ChangeDutyCycle(10)
             with print_lock:
                 print("Motor running at 50% duty cycle anticlockwise")
         else:
