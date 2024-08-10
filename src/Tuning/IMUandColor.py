@@ -34,6 +34,8 @@ def init():
 	sensor.gain = 60
 	prev_time = 0
 
+	print ("Initialised")
+
 
 def find_heading(dqw, dqx, dqy, dqz):
 	norm = sqrt(dqw * dqw + dqx * dqx + dqy * dqy + dqz * dqz)
@@ -63,7 +65,6 @@ while True:
 	#prev_time = time.time()
 	try:
 		init()
-		find_heading(dqw, dqx, dqy, dqz)
 		#color_rgb = sensor.color_rgb_bytes
 		#time.sleep(0.1)
 		# quat_i, quat_j, quat_k, quat_real = bno.quaternion
