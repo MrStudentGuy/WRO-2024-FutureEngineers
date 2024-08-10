@@ -1,6 +1,7 @@
 import time
 import board
 import busio
+import RPi.GPIO as GPIO
 from math import atan2, sqrt, pi
 import adafruit_tcs34725
 
