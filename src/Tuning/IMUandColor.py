@@ -12,16 +12,27 @@ from adafruit_bno08x import (
 )
 from adafruit_bno08x.i2c import BNO08X_I2C
 
-i2c = busio.I2C(board.SCL, board.SDA, frequency=400000)
-i2c1 = busio.I2C(board.SCL, board.SDA)
-sensor = adafruit_tcs34725.TCS34725(i2c)
-bno = BNO08X_I2C(i2c1)
-bno.enable_feature(BNO_REPORT_ACCELEROMETER)
-bno.enable_feature(BNO_REPORT_GYROSCOPE)
-bno.enable_feature(BNO_REPORT_MAGNETOMETER)
-bno.enable_feature(BNO_REPORT_ROTATION_VECTOR)
-sensor.gain = 60
-prev_time = 0
+IMU_RST = 17
+GPIO.setup(IMU_RST, GPIO.OUT)
+
+def init():
+	
+    	GPIO.output(IMU_RST, GPIO.LOW)
+    	# Hold the reset for 10ms (adjust the duration as needed)
+    	time.sleep(0.01)
+    	# Release the reset
+    	GPIO.output(IMU_RST, GPIO.HIGH)
+
+	i2c = busio.I2C(board.SCL, board.SDA, frequency=400000)
+	i2c1 = busio.I2C(board.SCL, board.SDA)
+	sensor = adafruit_tcs34725.TCS34725(i2c)
+	bno = BNO08X_I2C(i2c1)
+	bno.enable_feature(BNO_REPORT_ACCELEROMETER)
+	bno.enable_feature(BNO_REPORT_GYROSCOPE)
+	bno.enable_feature(BNO_REPORT_MAGNETOMETER)
+	bno.enable_feature(BNO_REPORT_ROTATION_VECTOR)
+	sensor.gain = 60
+	prev_time = 0
 
 
 def find_heading(dqw, dqx, dqy, dqz):
@@ -51,21 +62,23 @@ while True:
 	#print(1 / (time.time() - prev_time))
 	#prev_time = time.time()
 	try:
-		color_rgb = sensor.color_rgb_bytes
+		init()
+		find_heading(dqw, dqx, dqy, dqz)
+		#color_rgb = sensor.color_rgb_bytes
 		#time.sleep(0.1)
 		# quat_i, quat_j, quat_k, quat_real = bno.quaternion
 		# print("Rotation Vector Quaternion:")
 		# heading = find_heading(quat_real, quat_i, quat_j, quat_k)
-		if (color_rgb[0] == 0 and color_rgb[1] == 0 and color_rgb[2] == 0):
-			continue
-		elif color_rgb[2] < 20 and color_rgb[0] < 30 and color_rgb[1] < 20:
-			color_n = "Blue"
-		elif color_rgb[2] < 10 and color_rgb[0] > 80 and color_rgb[1] < 20:
-			color_n = "Orange"
-		else:
-			color_n = "White"
-		print("Color: {}".format(color_n))
-		print(f"r: {color_rgb[0]} g:{color_rgb[1]} b:{color_rgb[2]}")
+		#if (color_rgb[0] == 0 and color_rgb[1] == 0 and color_rgb[2] == 0):
+		#	continue
+		#elif color_rgb[2] < 20 and color_rgb[0] < 30 and color_rgb[1] < 20:
+		#	color_n = "Blue"
+		#elif color_rgb[2] < 10 and color_rgb[0] > 80 and color_rgb[1] < 20:
+		#	color_n = "Orange"
+		#else:
+		#	color_n = "White"
+		#print("Color: {}".format(color_n))
+		#print(f"r: {color_rgb[0]} g:{color_rgb[1]} b:{color_rgb[2]}")
 	except Exception as e:
 		pass
 
