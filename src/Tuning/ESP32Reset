@@ -1,14 +1,21 @@
 import serial
 import math
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 # Open the serial port
 ser = serial.Serial('/dev/ttyUSB0', 115200)
 # data = input()
 # rad = str(math.radians(float(data)))
+
 while True:
     # Rea	d data from ESP32
-
     # ser.write(rad.encode())
+    
+    
     esp_data = int(ser.readline().decode().strip())
     # esp_data = esp_data + 1
     # if esp_data.startswith("X: "):
