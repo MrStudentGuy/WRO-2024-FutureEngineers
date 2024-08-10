@@ -16,13 +16,12 @@ IMU_RST = 17
 GPIO.setup(IMU_RST, GPIO.OUT)
 
 def init():
+	GPIO.output(IMU_RST, GPIO.LOW)
+	# Hold the reset for 10ms (adjust the duration as needed)
+	time.sleep(0.01)
+	# Release the reset
+	GPIO.output(IMU_RST, GPIO.HIGH)
 	
-    	GPIO.output(IMU_RST, GPIO.LOW)
-    	# Hold the reset for 10ms (adjust the duration as needed)
-    	time.sleep(0.01)
-    	# Release the reset
-    	GPIO.output(IMU_RST, GPIO.HIGH)
-
 	i2c = busio.I2C(board.SCL, board.SDA, frequency=400000)
 	i2c1 = busio.I2C(board.SCL, board.SDA)
 	sensor = adafruit_tcs34725.TCS34725(i2c)
@@ -33,7 +32,6 @@ def init():
 	bno.enable_feature(BNO_REPORT_ROTATION_VECTOR)
 	sensor.gain = 60
 	prev_time = 0
-
 	print ("Initialised")
 
 
