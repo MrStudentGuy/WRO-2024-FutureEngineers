@@ -68,3 +68,7 @@ class IMUandColorSensor:
 
 	def close(self):
 		GPIO.cleanup()
+
+if __name__ == "__main__":
+	test = IMUandColorSensor() 
+	test()
