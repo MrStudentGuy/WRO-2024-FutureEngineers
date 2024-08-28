@@ -5,7 +5,14 @@ This repository provides all the information about the WRO Future Engineers 2024
 
 All 3 of us have prior *FIRST* Tech Challenge and *FIRST* Robotics Competition experience, and wanted to try our hands at something new!
 
+**Aryan Pai** is the captain of an FTC Team, and a drive team member of an FRC team. He's a 10th grader at the Dhirubhai Ambani International School and an avid software developer. As hobbies, he enjoys music production and acting.
+
+**Micquel Devlaliwalla** is a drive team member for an FRC team. He's a full-stack engineer, having experience with HTML, CSS and Javascript alongside Java. He's also a 10th grader at the Dhirubhai Ambani International School, as well as being a part of the school's student council.
+
+**Manish Ganeshan** TO BE ADDED
+
 ## Content:
+* Electricals
 * Open Challenge Code
 * Obstacle Challenge Code
 * Robot CAD
@@ -14,10 +21,12 @@ All 3 of us have prior *FIRST* Tech Challenge and *FIRST* Robotics Competition e
 * Team Photos
 * Debugging
 
+## To be Added: Electricals
+
 ## Game Analysis
 Our team has carefully examined the requirements for this season's World Robot Olympiad (WRO) Self-Driving Car Challenge. We recognize that the competition adopts a Time Attack format, presenting us with two distinct challenges that will test our autonomous vehicle technology.
 
-Open Challenge
+**Open Challenge**
 Our objective is to complete three laps on a track with randomized inner wall placements. We have identified several key areas for focus:
 
 * Development of adaptive path planning algorithms
@@ -32,7 +41,7 @@ Our strategy involves:
 * Optimizing our sensor utilization for rapid environment mapping
 
 
-Obstacle Challenge
+**Obstacle Challenge**
 This challenge requires us to navigate three laps while adhering to lane instructions indicated by colored traffic signs. We must consider:
 
 * Red pillars instruct us to keep to the right side of the lane
