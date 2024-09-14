@@ -82,5 +82,19 @@ Our rapid prototyping process evolved significantly as we developed our robot. I
 
 To address these limitations, we pivoted to a more powerful setup. We transitioned to using a Raspberry Pi 4 as our main processing unit, running Python code developed in PyCharm. This shift provided us with much more computational power and flexibility. For motor control and servo movements, we retained an ESP32 microcontroller, establishing communication between the Raspberry Pi and ESP32 via UART. This separation of concerns allowed us to leverage the strengths of both systems: the Raspberry Pi excelled at complex computations and vision processing, while the ESP32 efficiently handled low-level hardware control. This new architecture significantly improved our robot's performance and allowed us to implement more sophisticated algorithms.
 
+## Robot Photos
+
+![image](https://github.com/user-attachments/assets/d9219694-5fc7-42ac-bf8e-7ec5185aebed)
+
+![image](https://github.com/user-attachments/assets/89cd5e08-d41c-428e-8fff-790a9f905dad)
+
+![image](https://github.com/user-attachments/assets/915d3601-9517-48dd-935f-37e742e6c9c8)
+
+
+![image](https://github.com/user-attachments/assets/b861fbc4-687c-4396-977f-e003d53092af)
+
+![image](https://github.com/user-attachments/assets/d344d820-f7d5-47eb-8287-e00daeffea4f)
+
+
 ## Debugging
     
