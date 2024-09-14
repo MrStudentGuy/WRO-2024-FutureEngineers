@@ -90,6 +90,8 @@ To address these limitations, we pivoted to a more powerful setup. We transition
 
 ![image](https://github.com/user-attachments/assets/915d3601-9517-48dd-935f-37e742e6c9c8)
 
+![image](https://github.com/user-attachments/assets/76ab2de8-cfe6-48e6-9306-c60922ddec73)
+
 
 ![image](https://github.com/user-attachments/assets/b861fbc4-687c-4396-977f-e003d53092af)
 
