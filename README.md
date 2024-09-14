@@ -9,7 +9,7 @@ All 3 of us have prior *FIRST* Tech Challenge and *FIRST* Robotics Competition e
 
 **Micquel Devlaliwalla** is a drive team member for an FRC team. He's a full-stack engineer, having experience with HTML, CSS and Javascript alongside Java. He's also a 10th grader at the Dhirubhai Ambani International School, as well as being a part of the school's student council.
 
-**Manish Ganeshan** TO BE ADDED
+**Manish Ganeshan** is a construction team member for a FRC team. He's an avid constructer and loves STEM. He's a 10th grader and a student council member at the Dhirubhai Ambani International School. He is also a sports enthusiast, WRO being the perfect link between conpetitve sport and robotics.
 
 ## Content
 * Electrical Architecture
