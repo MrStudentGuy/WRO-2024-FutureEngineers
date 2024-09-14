@@ -17,7 +17,7 @@ All 3 of us have prior *FIRST* Tech Challenge and *FIRST* Robotics Competition e
 * Open Challenge Code
 * Obstacle Challenge Code
 * Robot CAD
-* Robot Structure + Photos
+* Robot Photos
 * Youtube Channel
 * Team Photos
 * Debugging
