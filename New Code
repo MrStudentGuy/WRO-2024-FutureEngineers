@@ -1,0 +1,816 @@
+#include <Wire.h>  // Include Wire library for I2C communication
+#include <Servo.h> // Include Servo library for servo control
+
+// Constants
+const int RX_Head = 23;
+const int RX_Left = 24;
+const int RX_Right = 25;
+
+// Variables
+int currentAngle = 0;
+float error_gyro = 0;
+float prevErrorGyro = 0;
+float totalErrorGyro = 0;
+float correcion = 0;
+float totalError = 0;
+float prevError = 0;
+float kp = 0.6;
+float ki = 0;
+float kd = 0.1;
+
+float kp_b = 0.02;
+float ki_b = 0;
+float kd_b = 0.003;
+
+float kp_us = 0.55;
+float ki_us = 0;
+float kd_us = 0.2;
+
+float kp_e = 3; // 12
+float ki_e = 0;
+float kd_e = 40; // 40if
+
+int setPoint_flag = 0;
+
+int distance_head = 0;
+int distance_left = 0;
+int distance_right = 0;
+
+float corr = 0;
+float corr_pos = 0;
+
+int glob = 0;
+float heading = 0;
+
+EncoderCounter enc; // assuming EncoderCounter is a class defined elsewhere
+
+bool parking_flag = false;
+bool parking_counter_store = true;
+bool lap_finish = false;
+int change_counter = 4;
+int pink_run = 1;
+bool pink_avoid = false;
+bool prev_distance_store = false;
+int imu_head = 0;
+unsigned long p_time = 0;
+bool counter_reset = false;
+bool turn_flag = false;
+bool change_heading = false;
+bool reset_flags = false;
+int offset = 0;
+bool finished = false;
+int target_count = 0;
+int counter_heading = 0;
+bool change_off = false;
+
+Serial ser; // Adjust or remove if not used
+
+Servo servo; // Create a Servo object
+
+
+void setup() {
+  Serial.begin(115200);  // Start serial communication at 115200 baud rate
+  
+  pinMode(RX_Head, INPUT);  // Set RX_Head pin as input
+  pinMode(RX_Left, INPUT);  // Set RX_Left pin as input
+  pinMode(RX_Right, INPUT); // Set RX_Right pin as input
+
+  pinMode(12, OUTPUT);  // Set pin 12 as output
+  pinMode(20, OUTPUT);  // Set pin 20 as output
+  
+  servo.attach(8);  // Attach the servo to pin 8
+  
+  // Other initializations
+}
+
+void loop() {
+  // Your code to handle serial reading, sensor data, and other operations
+
+  // For example, to read a pin:
+  int buttonState = digitalRead(5);
+  
+  // Example of setting PWM:
+  analogWrite(12, 255);  // Set PWM duty cycle on pin 12
+
+  // Example of servo control:
+  servo.write(90);  // Set servo angle to 90 degrees
+
+  // Delay to simulate some processing
+  delay(1000);
+}
+
+
+// Global variables
+float prevError = 0;
+float totalError = 0;
+float prevErrorGyro = 0;
+float totalErrorGyro = 0;
+float distance_left = 0;
+float distance_right = 0;
+float distance_head = 0;
+float corr_pos = 0;
+
+
+
+void getTFminiData() {
+  int count_head = 0, count_left = 0, count_right = 0;
+  byte recv_head[256], recv_left[256], recv_right[256];
+  int distance_head = 0, distance_left = 0, distance_right = 0;
+  int strength_head = 0, strength_left = 0, strength_right = 0;
+
+  // Read data from Serial (replace Serial with the appropriate serial port if needed)
+  count_head = Serial.readBytes(recv_head, sizeof(recv_head));
+  count_left = Serial.readBytes(recv_left, sizeof(recv_left));
+  count_right = Serial.readBytes(recv_right, sizeof(recv_right));
+
+  if (count_head > 8) {
+    for (int i = 0; i < count_head - 9; i++) {
+      if (recv_head[i] == 89 && recv_head[i + 1] == 89) { // 0x59 is 89
+        byte checksum = 0;
+        for (int j = 0; j < 8; j++) {
+          checksum += recv_head[i + j];
+        }
+        checksum = checksum % 256;
+        if (checksum == recv_head[i + 8]) {
+          distance_head = recv_head[i + 2] + recv_head[i + 3] * 256;
+          strength_head = recv_head[i + 4] + recv_head[i + 5] * 256;
+        }
+      }
+    }
+    // Serial.print("DDDD : "); Serial.println(distance_head);
+  }
+
+  if (count_left > 8) {
+    for (int i = 0; i < count_left - 9; i++) {
+      if (recv_left[i] == 89 && recv_left[i + 1] == 89) { // 0x59 is 89
+        byte checksum = 0;
+        for (int j = 0; j < 8; j++) {
+          checksum += recv_left[i + j];
+        }
+        checksum = checksum % 256;
+        if (checksum == recv_left[i + 8]) {
+          distance_left = recv_left[i + 2] + recv_left[i + 3] * 256;
+          strength_left = recv_left[i + 4] + recv_left[i + 5] * 256;
+        }
+      }
+    }
+    // Serial.print("distance_left : "); Serial.println(distance_left);
+  }
+
+  if (count_right > 8) {
+    for (int i = 0; i < count_right - 9; i++) {
+      if (recv_right[i] == 89 && recv_right[i + 1] == 89) { // 0x59 is 89
+        byte checksum = 0;
+        for (int j = 0; j < 8; j++) {
+          checksum += recv_right[i + j];
+        }
+        checksum = checksum % 256;
+        if (checksum == recv_right[i + 8]) {
+          distance_right = recv_right[i + 2] + recv_right[i + 3] * 256;
+          strength_right = recv_right[i + 4] + recv_right[i + 5] * 256;
+        }
+      }
+    }
+  }
+}
+
+
+// Define the correction function
+void correctPosition(float setPoint, float head, float x, float y, bool trigger, int counter, bool green, bool red, bool blue, bool orange, bool reset, bool reverse) {
+    // Initialize variables
+    float error = 0;
+    float correction = 0;
+    float pTerm_e = 0;
+    float dTerm_e = 0;
+    float iTerm_e = 0;
+    int lane = counter % 4;
+    
+    // Compute error based on lane
+    if (lane == 0) {
+        if (!reverse) {
+            error = setPoint - y;
+        } else {
+            error = y + setPoint;
+        }
+        Serial.print("lane: "); Serial.print(lane); Serial.print(" error: "); Serial.print(error); Serial.print(" target: "); Serial.println(setPoint);
+    } else if (lane == 1) {
+        if (orange) {
+            error = x - (100 - setPoint);
+        } else if (blue) {
+            error = (100 + setPoint) - x;
+        }
+        Serial.print("lane: "); Serial.print(lane); Serial.print(" error: "); Serial.print(error); Serial.print(" target: "); Serial.println(100 - setPoint); Serial.print(" x: "); Serial.println(x);
+    } else if (lane == 2) {
+        if (orange) {
+            error = y - (200 - setPoint);
+        } else if (blue) {
+            error = y - (-200 - setPoint);
+        }
+        Serial.print("lane: "); Serial.print(lane); Serial.print(" error: "); Serial.print(error); Serial.print(" target: "); Serial.println(-200 - setPoint); Serial.print(" y: "); Serial.println(y);
+    } else if (lane == 3) {
+        if (orange) {
+            error = (setPoint - 100) - x;
+        } else if (blue) {
+            error = x + (100 + setPoint);
+        }
+        Serial.print("lane: "); Serial.print(lane); Serial.print(" error: "); Serial.print(error); Serial.print(" target: "); Serial.println(-100 - setPoint);
+    }
+    
+    // PID calculations
+    pTerm_e = kp_e * error;
+    dTerm_e = kd_e * (error - prevError);
+    totalError += error;
+    iTerm_e = ki_e * totalError;
+    correction = pTerm_e + iTerm_e + dTerm_e;
+    
+    // Correction adjustments based on setPoint
+    if (setPoint == 0) {
+        if (abs(error) < 10) {
+            correction = 0;
+        }
+    } else if (setPoint == -10 || setPoint == 10) {
+        if (abs(error) < 10) {
+            correction = 0;
+        }
+    }
+    
+    // Conditional adjustments based on sensor data
+    if (!reset) {
+        getTFminiData();  // Assumed to be a function that updates distance_left, distance_right, and distance_head
+        
+        if (setPoint == -70 && orange) {
+            if (distance_left < 20 || (distance_head < 70 && distance_right < 30)) {
+                Serial.println("Correcting Green Wall");
+                correction = 10;
+            }
+        } else if (setPoint == -70 && blue) {
+            if (distance_left < 20 || (distance_head < 70 || distance_right < 30)) {
+                Serial.println("Correcting Green Wall");
+                correction = 10;
+            }
+        } else if (setPoint == 70 && orange) {
+            if (distance_right < 20 || (distance_head < 70 || distance_left < 30)) {
+                Serial.println("Correcting Red Wall");
+                correction = -10;
+            }
+        } else if (setPoint == 70 && blue) {
+            if (distance_left < 20 || (distance_head < 70 && distance_right < 30)) {
+                Serial.println("Correcting Green Wall");
+                correction = 10;
+            }
+        }
+    }
+    
+    // Limit correction values
+    if (setPoint == 0) {
+        if (correction > 25) {
+            correction = 25;
+        } else if (correction < -25) {
+            correction = -25;
+        }
+    } else {
+        if (correction > 45) {
+            correction = 45;
+        } else if (correction < -45) {
+            correction = -45;
+        }
+    }
+    
+    Serial.print("Correction in position: "); Serial.println(correction);
+    Serial.print("lane: "); Serial.print(lane); Serial.print(" correction: "); Serial.print(correction); Serial.print(" error: "); Serial.print(error); Serial.print(" x: "); Serial.print(x); Serial.print(" y: "); Serial.print(y); Serial.print(" prevError: "); Serial.println(prevError);
+    
+    // Update previous error
+    prevError = error;
+    
+    // Call the function to correct the angle
+    correctAngle(head + correction);  // Assumed to be a function that takes care of the actual correction
+}
+
+void correctAngle(float setPoint_gyro) {
+    // Initialize variables
+    float error_gyro = 0;
+    float correction = 0;
+    float pTerm = 0;
+    float dTerm = 0;
+    float iTerm = 0;
+
+    // Read the heading from IMU
+    float heading = imu.read_imu();  // Replace with actual IMU read method
+
+    // Update global heading
+    glob = heading;
+
+    // Compute gyro error
+    error_gyro = heading - setPoint_gyro;
+
+    // Normalize error to range [-180, 180]
+    if (error_gyro > 180) {
+        error_gyro -= 360;
+    } else if (error_gyro < -180) {
+        error_gyro += 360;
+    }
+    corr = error_gyro;
+
+    // Print error for debugging
+    Serial.print("Error: "); Serial.println(error_gyro);
+
+    // PID calculations
+    pTerm = kp * error_gyro;
+    dTerm = kd * (error_gyro - prevErrorGyro);
+    totalErrorGyro += error_gyro;
+    iTerm = ki * totalErrorGyro;
+    correction = pTerm + iTerm + dTerm;
+
+    // Print correction for debugging
+    Serial.print("Correction in IMU: "); Serial.println(correction);
+
+    // Limit correction values
+    if (correction > 30) {
+        correction = 30;
+    } else if (correction < -30) {
+        correction = -30;
+    }
+
+    // Print final correction value
+    Serial.print("Correction: "); Serial.println(correction);
+
+    // Update previous gyro error
+    prevErrorGyro = error_gyro;
+
+    // Set servo angle
+    servo.setAngle(90 - correction);  // Replace with actual servo control method
+}
+
+void servoDrive(pwm, bool color_b, bool stop_b, bool red_b, bool green_b, bool pink_b, bool avoid_park, bool counts, bool centr_y, bool centr_y_red, bool centr_y_pink, bool g_next, bool r_next){
+    
+    unsigned long pb_time = 0
+	  
+    
+    // Define global variables
+    int x = 0;
+    int y = 0;
+
+    int previous_state = 0;
+    int button_state = 0;
+    bool button = false;
+
+    int heading_angle = 0;
+
+    bool red_stored = false;
+    bool green_stored = false;
+
+    bool trigger = false;
+    int counter = 0;
+    bool correctAngle = false;  // Placeholder for correctAngle function
+    // EncoderCounter enc;  // Placeholder for EncoderCounter instance
+    unsigned long past_time = 0;
+    int setPointL = -70;
+    int setPointR = 70;
+    bool reset_f = false;
+    bool change_path = false;
+    bool green_turn = false;
+    unsigned long turn_t = 0;
+    unsigned long current_time = 0;
+    bool timer_started = false;
+    int power = 55;
+    int prev_power = 0;
+
+    bool g_flag = false;
+    bool r_flag = false;
+    bool p_flag = false;
+
+    unsigned long gp_time = 0;
+    unsigned long rp_time = 0;
+
+    bool g_past = false;
+    bool r_past = false;
+    bool p_past = false;
+
+    bool blue_flag = false;
+    bool orange_flag = false;
+
+    String color_n = "";
+    bool parking_flag = false;
+
+    int green_count = 0;
+    int red_count = 0;
+
+    bool reverse = false;
+
+    bool parking_heading = false;
+    int last_counter = 12;
+    unsigned long c_time = 0;
+    bool stop_flag = false;
+    bool calc_time = false;
+    bool start_parking = false;
+    bool continue_parking = false;
+    bool adjust = false;
+    int p_count = 0;
+    bool parking_counter_store = true;
+    bool lap_finish = false;
+    int change_counter = 4;
+    int pink_run = 1;
+    bool pink_avoid = false;
+    int prev_distance = 0;
+    unsigned long p_time = 0;
+    bool counter_reset = false;
+    bool prev_distance_store = false;
+    bool turn_flag = false;
+    bool change_heading = false;
+    bool reset_flags = false;
+    int offset = 0;
+    bool finished = false;
+    int target_count = 0;
+    int counter_heading = 0;
+    bool change_off = false;
+    int i = 0;
+
+    while (true) {
+      if (counter == last_counter && !lap_finish) {
+          if ((green_count == 1 || red_count == 1) || (green_count == 0 && red_count == 0)) && !lap_finish) {
+              if (!finished) {
+                  target_count = counts.value + 18000;
+                  finished = true;
+              }
+              if (counts.value >= target_count) {
+                  power = 0;
+                  analogWrite(12, power); // Set PWM duty cycle to 0%
+                  delay(3 * 1000); // Delay for 3 seconds
+                  power = 60;
+                  prev_power = 0;
+                  lap_finish = true;
+              }
+          }
+      }
+
+      if (lap_finish) {
+          if (!counter_reset) {
+              counter = counter % 12;
+              counter_reset = true;
+          }
+      }
+
+      if (pink_b.value) { // DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
+          if (orange_flag) {
+              setPointL = -25;
+              setPointR = 70;
+          } else if (blue_flag) {
+              setPointL = -70;
+              setPointR = 25;
+              Serial.println("Pink in blue flag");
+          }
+          pb_time = millis();
+
+          if (lap_finish && !continue_parking) {
+              Serial.println("Starting Parking...");
+              if (!prev_distance_store) {
+                  getTFminiData();
+                  if (orange_flag) {
+                      prev_distance = distance_left;
+                      Serial.println("Previous Distance stored Orange");
+                  } else if (blue_flag) {
+                      prev_distance = distance_right;
+                      Serial.println("Previous Distance stored Blue");
+                  }
+                  prev_distance_store = true;
+              }
+              continue_parking = true;
+          }
+      } else if (!pink_b.value && (millis() - pb_time) > pink_run) { // IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
+          setPointL = -70;
+          setPointR = 70;
+      }
+
+      if (continue_parking) { // THIS SETPOINT IS WHEN THE ROBOT IS IN THE PARKING MODE
+          green_b.value = false;
+          red_b.value = false;
+          g_past = false;
+          r_past = false;
+          g_flag = false;
+          r_flag = false;
+          if (orange_flag) {
+              setPointR = -20;
+          } else if (blue_flag) {
+              setPointL = 10;
+          }
+      }
+
+      if (lap_finish && red_b.value) {
+          if (orange_flag) {
+              setPointR = -70;
+          }
+      }
+
+      if (lap_finish && green_b.value) {
+          if (blue_flag) {
+              setPointL = 70;
+          }
+      }
+      color_sensor = imu.get_color();  // Get color sensor values
+      if (imu.color_rgb[0] == 0 && imu.color_rgb[1] == 0 && imu.color_rgb[2] == 0) {
+          continue;
+      }
+
+      // Serial.print("Color: "); Serial.print(color_sensor); Serial.print(", "); Serial.println(imu.color_rgb);
+
+      previous_state = button_state;
+      button_state = digitalRead(5);
+
+      if (previous_state == 1 && button_state == 0) {
+          button = !button;
+          power = 60;
+      }
+
+      if (button) {  // This block of code when button is pressed
+
+          // Reverse path if red block
+          imu_head = glob;
+
+          if (reset_flags) {
+              if (orange_flag) {
+                  blue_flag = true;
+                  orange_flag = false;
+                  color_n = "Blue";
+                  reset_flags = false;
+              } else if (blue_flag) {
+                  orange_flag = true;
+                  blue_flag = false;
+                  color_n = "Orange";
+                  reset_flags = false;
+              }
+          }
+          
+          x, y = enc.get_position(imu_head, counts.value);
+          total_power = (power * 0.1) + (prev_power * 0.9);
+
+          prev_power = total_power;
+          analogWrite(12, 2.55 * total_power);  // Set PWM duty cycle
+
+          digitalWrite(20, HIGH);  // Set pin 20 high
+
+          if (stop_b.value) {
+              power = 0;
+              prev_power = 0;
+          }
+
+          // Decides the direction
+          if (!blue_flag && !orange_flag) {
+              if (color_sensor == "Orange") {
+                  orange_flag = true;
+                  blue_flag = false;
+                  color_n = "Orange";
+              } else if (color_sensor == "Blue") {
+                  blue_flag = true;
+                  orange_flag = false;
+                  color_n = "Blue";
+              }
+          }
+
+          // Parking
+          if (parking_flag && !stop_flag) {
+              p_flag = false;
+              p_past = false;
+              correctAngle(heading_angle);
+
+              // Serial.print("PARKING ------> distance_head : "); Serial.println(distance_head);
+              if (!stop_flag && abs(corr) < 10) {
+                  // Serial.println("Inside Parking Loop");
+                  
+                  if (!calc_time) {
+                      c_time = millis();
+                      calc_time = true;
+                  }
+                  while (millis() - c_time < 300) {
+                      // Serial.println("Reversing backward...");
+                      power = 100;
+                      prev_power = 0;
+                      analogWrite(12, power);  // Set PWM duty cycle
+                      digitalWrite(20, LOW);  // Set pin 20 low
+                  }
+
+                  power = 30;
+                  analogWrite(12, power);
+                  if (orange_flag) {
+                      if (!parking_heading) {
+                          heading_angle = heading_angle - 90;
+                          parking_heading = true;
+                      }
+                  } else if (blue_flag) {
+                      if (!parking_heading) {
+                          heading_angle = heading_angle + 90;
+                          parking_heading = true;
+                      }
+                  }
+                  correctAngle(heading_angle);
+                  getTFminiData();
+                  if (abs(corr) < 15 && (distance_head < 5 && distance_head >= 0)) {
+                      power = 0;
+                      prev_power = 0;
+                      correctAngle(imu_head);
+                      analogWrite(12, power);
+                      stop_flag = true;
+                      // Serial.println("Successfully Parked...");
+                  }
+              }
+          } else {
+              if (reset_f) {
+                  if (blue_flag) {  // Blue reset block
+                      // Serial.println("BLUE RESET...");
+                      getTFminiData();
+                      x, y = enc.get_position(imu_head, counts.value);
+                      if ((red_b.value || red_turn) && distance_head > 20) {
+                          // Serial.println("Red Detected after trigger...");
+                          red_turn = true;
+                          setPointR = 10;
+                          correctPosition(setPointR, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse);
+                      } else {
+                          setPointR = 70;
+                          if (red_turn) {
+                              time_g = 1.3;
+                              if (!red_stored) {
+                                  red_stored = true;
+                              }
+                          } else {
+                              time_g = 0.6;
+                          }
+
+                          while (true) {
+                              correctAngle(heading_angle);
+                              if (abs(corr) < 15) {
+                                  break;
+                              }
+                          }
+
+                          if (!timer_started) {
+                              current_time = millis();
+                              timer_started = true;
+                          }
+                          if (!green_b.value && !g_past) {
+                              // Serial.println("Reversing direction red");
+                              while (millis() - current_time < time_g) {
+                                  getTFminiData();
+                                  x, y = enc.get_position(imu_head, counts.value);
+                                  power = 100;
+                                  prev_power = 0;
+                                  analogWrite(12, power);  // Set PWM duty cycle
+                                  digitalWrite(20, LOW);  // Set pin 20 low
+                              }
+                              // Serial.println("Reversing direction red complete");
+                              // Serial.println("Stopping Motor...");
+                          }
+
+                          if ((green_b.value || green_turn) || g_past) {
+                              green_turn = true;
+                              // Serial.println("Reversing direction Green");
+                              while (true) {
+                                  buff = 4;
+                                  if ((green_b.value && centr_y.value < 350) || (g_past && (millis() - current_time > 1300))) {
+                                      // Serial.println("Breaking the loop...");
+                                      break;
+                                  }
+                                  getTFminiData();
+                                  x, y = enc.get_position(imu_head, counts.value);
+                                  power = 100;
+                                  prev_power = 0;
+                                  analogWrite(12, power);  // Set PWM duty cycle
+                                  digitalWrite(20, LOW);  // Set pin 20 low
+                              }
+                              // Serial.println("Green reversing direction complete");
+                              // Serial.println("Stopping Motor...");
+                          }
+
+                          power = 0;
+                          prev_power = 0;
+                          analogWrite(12, power);  // Set PWM duty cycle
+
+                          getTFminiData();
+                          // Serial.print("head : "); Serial.println(distance_head);
+                          delay(1000);
+
+                          counter = counter + 1;
+                          lane_reset = counter % 4;
+
+                          if (lane_reset == 1) {
+                              enc.x = (150 - distance_head * cos(radians(abs(corr)))) - 10;
+                          }
+                          if (lane_reset == 2) {
+                              enc.y = (distance_head * cos(radians(abs(corr))) - 250) + 10;
+                          }
+                          if (lane_reset == 3) {
+                              enc.x = (distance_head * cos(radians(abs(corr))) - 150) + 10;
+                          }
+                          if (lane_reset == 0) {
+                              enc.y = (50 - distance_head * cos(radians(abs(corr)))) - 10;
+                          }
+                          // Serial.print("Resuming Motor..."); Serial.println(offset);
+
+                          power = 60;
+                          heading_angle = -(((90 * counter)) % 360);
+
+                          green_turn = false;
+                          red_turn = false;
+                          p_turn = false;
+                          reset_f = false;
+                      } else if (orange_flag) {  // Orange reset block
+                          getTFminiData();
+                          x, y = enc.get_position(imu_head, counts.value);
+                          if ((green_b.value || green_turn) && distance_head > 20) {
+                              // Serial.println("Green Detected after trigger...");
+                              green_turn = true;
+                              setPointL = -10;
+                              p_turn = false;
+                              correctPosition(setPointL, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse);
+                          } else {
+                              setPointL = -70;
+                              if (green_turn) {
+                                  time_g = 1.3;
+                                  if (!green_stored) {
+                                      green_stored = true;
+                                  }
+                              } else {
+                                  time_g = 0.6;
+                              }
+
+                              while (true) {
+                                  correctAngle(heading_angle);
+                                  if (abs(corr) < 15) {
+                                      break;
+                                  }
+                              }
+
+                              if (!timer_started) {
+                                  current_time = millis();
+                                  timer_started = true;
+                              }
+                              if (!red_b.value && !r_past) {
+                                  // Serial.println("Reversing direction green");
+                                  while (millis() - current_time < time_g) {
+                                      getTFminiData();
+                                      x, y = enc.get_position(imu_head, counts.value);
+                                      power = 100;
+                                      prev_power = 0;
+                                      analogWrite(12, power);  // Set PWM duty cycle
+                                      digitalWrite(20, LOW);  // Set pin 20 low
+                                  }
+                                  // Serial.println("Reversing direction green complete");
+                                  // Serial.println("Stopping Motor...");
+                              } else if ((red_b.value || red_turn) || r_past) {
+                                  red_turn = true;
+                                  // Serial.println("Reversing direction red pink color: ");
+                                  while (true) {
+                                      buff = 4;
+                                      if ((red_b.value && centr_y_red.value < 350) || (r_past && (millis() - current_time > 1300))) {
+                                          // Serial.println("Breaking the loop...");
+                                          break;
+                                      }
+                                      getTFminiData();
+                                      x, y = enc.get_position(imu_head, counts.value);
+                                      power = 100;
+                                      prev_power = 0;
+                                      analogWrite(12, power);  // Set PWM duty cycle
+                                      digitalWrite(20, LOW);  // Set pin 20 low
+                                  }
+                                  // Serial.println("Red reversing direction complete");
+                                  // Serial.println("Stopping Motor...");
+                              }
+
+                              power = 0;
+                              prev_power = 0;
+                              analogWrite(12, power);  // Set PWM duty cycle
+
+                              getTFminiData();
+                              // Serial.print("head : "); Serial.println(distance_head);
+                              delay(1000);
+
+                              counter = counter + 1;
+                              lane_reset = counter % 4;
+
+                              if (lane_reset == 1) {
+                                  enc.x = (150 - distance_head * cos(radians(abs(corr)))) - 10;
+                              }
+                              if (lane_reset == 2) {
+                                  enc.y = (distance_head * cos(radians(abs(corr))) - 250) + 10;
+                              }
+                              if (lane_reset == 3) {
+                                  enc.x = (distance_head * cos(radians(abs(corr))) - 150) + 10;
+                              }
+                              if (lane_reset == 0) {
+                                  enc.y = (50 - distance_head * cos(radians(abs(corr)))) - 10;
+                              }
+                              // Serial.print("Resuming Motor..."); Serial.println(offset);
+
+                              power = 60;
+                              heading_angle = -(((90 * counter)) % 360);
+
+                              green_turn = false;
+                              red_turn = false;
+                              p_turn = false;
+                              reset_f = false;
+                          }
+                      }
+                  }
+              }
+          }
+      }
+    }
+}
