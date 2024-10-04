@@ -355,5 +355,5 @@ if __name__ == "__main__":
 		pwm.stop()
 		imu = IMUandColorSensor(board.SCL, board.SDA)
 		imu.close()
-		pwm12.ChangeDutyCycle(0)
+		pwm.ChangeDutyCycle(0)
 		GPIO.cleanup()
