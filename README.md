@@ -1,19 +1,19 @@
 # Team Paraducks | WRO Future Engineers 2024
 
 # Content
-**t-photos** contains 2 photos of the team - official and funny
+- `t-photos` contains 2 photos of the team - official and funny
 
-**v-photos** contains 6 photos of the vehicle from every angle
+- `v-photos` contains 6 photos of the vehicle from every angle
 
-**video** contains the video.md file with the link to a video where driving demonstration exists
+- `video` contains the video.md file with the link to a video where driving demonstration exists
 
-**schemes** contains a circuit diagram along with an explanation of motors and sensors utilised
+- `schemes` contains a circuit diagram along with an explanation of motors and sensors utilised
 
-**src** contains code of control software for all components which were programmed to participate in the competition
+- `src` contains code of control software for all components which were programmed to participate in the competition
 
-**models** contains the complete updated solidworks assembly of the robot and the stl files for all 3D printed parts
+- `models` contains the complete updated solidworks assembly of the robot and the stl files for all 3D printed parts
 
-**other** is for other files which can be used to understand how to prepare the vehicle for the competition. It includes en engineering journal that comprehenisively explains all aspects of the robots
+- `other` includes en engineering journal that comprehensively explains all aspects of the robots
 
 
 ## Introduction
